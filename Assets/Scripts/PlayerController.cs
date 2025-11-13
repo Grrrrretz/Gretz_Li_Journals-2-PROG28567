@@ -51,6 +51,8 @@ public class PlayerController : MonoBehaviour
             moveRight = true;
             tool = 1;
             playerInput = new Vector2(tool, 0);
+            rigibd.linearVelocityY = 0;
+
         }
 
         if (Input.GetKey(KeyCode.A))
@@ -58,10 +60,10 @@ public class PlayerController : MonoBehaviour
             moveLeft = true;
             tool = -1;
             playerInput = new Vector2(tool, 0);
-
+            rigibd.linearVelocityY = 0;
         }
 
-
+        Debug.Log("VY =" + rigibd.linearVelocityY);
 
     }
 
@@ -128,7 +130,7 @@ public class PlayerController : MonoBehaviour
 
     public bool IsWalking()
     {
-        if (Mathf.Abs(rigibd.linearVelocityX) != 0)
+        if (Mathf.Abs(rigibd.linearVelocityX) > 0)
         {
             return true;
         }
@@ -138,18 +140,22 @@ public class PlayerController : MonoBehaviour
         }
 
         
+
+        
     }
     public bool IsGrounded()
     {
-        //if (Mathf.Abs(rigibd.linearVelocityX) != 0)
-        //{
-        //    return false;
-        //}
-        //else
-        //{
-        //    return true;
-        //}
-        return true;
+        if (Mathf.Abs(rigibd.linearVelocityY) !=0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+
+        
+        //return true;
 
 
     }
