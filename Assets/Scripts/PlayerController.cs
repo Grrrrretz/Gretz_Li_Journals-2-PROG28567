@@ -163,7 +163,7 @@ public class PlayerController : MonoBehaviour
     public FacingDirection GetFacingDirection()
     {
 
-        if(playerInput.x >= 0.01)
+        if(playerInput.x >= 0)
         {
             return FacingDirection.right;
         }
