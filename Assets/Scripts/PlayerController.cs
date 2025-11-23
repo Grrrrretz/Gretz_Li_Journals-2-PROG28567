@@ -149,6 +149,10 @@ public class PlayerController : MonoBehaviour
 
             
         }
+        if (rigibd.linearVelocityY < -TerminalSpeed)
+        {
+            rigibd.linearVelocityY = -TerminalSpeed;
+        }
 
 
         Jumping = false;
