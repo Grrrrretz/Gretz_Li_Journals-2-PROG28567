@@ -22,6 +22,22 @@ public class PlayerController : MonoBehaviour
 
 
     public Rigidbody2D rigibd;
+
+
+    public float ApexHeight;
+    public float ApexTime;
+    public float TerminalSpeed;
+    public float CoyoteTime;
+    //
+    public float G;
+    public float InitialJumpVelocity;
+    private float CoyoteTimer;
+
+    bool Jumping = false;
+
+
+
+
     public enum FacingDirection
     {
         left, right
@@ -34,6 +50,9 @@ public class PlayerController : MonoBehaviour
         acc = maxSpeed / accTime;
         dec = maxSpeed / decTime;
 
+        G = -2f * ApexHeight / (ApexTime * ApexTime);
+        InitialJumpVelocity = 2f * ApexHeight / ApexTime;
+
     }
 
     // Update is called once per frame
@@ -45,46 +64,43 @@ public class PlayerController : MonoBehaviour
         //The input from the player needs to be determined and then passed in the to the MovementUpdate which should
         //manage the actual movement of the character.
 
-
         if (Input.GetKey(KeyCode.D))
         {
-            moveRight = true;
             tool = 1;
             playerInput = new Vector2(tool, 0);
-            rigibd.linearVelocityY = 0;
-
         }
-
-        if (Input.GetKey(KeyCode.A))
+        else if (Input.GetKey(KeyCode.A))
         {
-            moveLeft = true;
             tool = -1;
             playerInput = new Vector2(tool, 0);
-            rigibd.linearVelocityY = 0;
+        }
+        else
+        {
+            playerInput = Vector2.zero;
         }
 
-        Debug.Log("VY =" + rigibd.linearVelocityY);
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Jumping = true;
+        }
+
+        if (IsGrounded())
+        {
+            CoyoteTimer = CoyoteTime;
+        }
+        else
+        {
+            CoyoteTimer -= Time.deltaTime;
+        }
 
     }
 
     private void FixedUpdate()
     {
 
-        if (moveLeft == true)
-        {
-            
-            MovementUpdate(playerInput);
-
-            moveLeft = false;
-        }
-        else if (moveRight == true)
-        {
-            
-            MovementUpdate(playerInput);
-            moveRight = false;
-        }
 
 
+        MovementUpdate(playerInput);
 
 
     }
@@ -93,7 +109,7 @@ public class PlayerController : MonoBehaviour
     {
         float realspeed = playerInput.x * maxSpeed;
 
-        float nowspeed = rigibd.linearVelocity.x;
+        Vector2 nowspeed = rigibd.linearVelocity;
 
         bool accING = false;
 
@@ -117,13 +133,25 @@ public class PlayerController : MonoBehaviour
             ADDorSUB = dec;
         }
 
-        float newSpeed = Mathf.MoveTowards(nowspeed, realspeed, ADDorSUB * Time.fixedDeltaTime);
-
+        float newSpeed = Mathf.MoveTowards(nowspeed.x, realspeed, ADDorSUB * Time.fixedDeltaTime);
 
 
 
         rigibd.linearVelocityX = newSpeed;
 
+        rigibd.linearVelocityY += G * Time.fixedDeltaTime;
+
+        if(Jumping == true && CoyoteTimer > 0f)
+        {
+
+            rigibd.linearVelocityY = InitialJumpVelocity;
+            CoyoteTimer = 0f;
+
+            
+        }
+
+
+        Jumping = false;
 
 
     }
@@ -145,13 +173,14 @@ public class PlayerController : MonoBehaviour
     }
     public bool IsGrounded()
     {
-        if (Mathf.Abs(rigibd.linearVelocityY) !=0)
+
+        if (Mathf.Abs(rigibd.linearVelocityY) < 0.01f)
         {
-            return false;
+            return true;
         }
         else
         {
-            return true;
+            return false;
         }
 
         
