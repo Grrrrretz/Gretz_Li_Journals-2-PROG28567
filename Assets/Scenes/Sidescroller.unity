@@ -1712,7 +1712,7 @@ MonoBehaviour:
   playerInput: {x: 0, y: 0}
   rigibd: {fileID: 1433354317}
   ApexHeight: 3
-  ApexTime: 0.5
+  ApexTime: 0.78
   TerminalSpeed: 15
   CoyoteTime: 0.1
   G: 0
