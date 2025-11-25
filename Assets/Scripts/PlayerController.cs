@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
 
     public bool moveRight = false;
     public bool moveLeft = false;
+    public LayerMask GroundTile;
 
 
     public Vector2 playerInput;
@@ -178,14 +179,7 @@ public class PlayerController : MonoBehaviour
     public bool IsGrounded()
     {
 
-        if (Mathf.Abs(rigibd.linearVelocityY) < 0.01f)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return Physics2D.Raycast(transform.position, Vector2.down, 0.7f, GroundTile);
 
         
         //return true;
