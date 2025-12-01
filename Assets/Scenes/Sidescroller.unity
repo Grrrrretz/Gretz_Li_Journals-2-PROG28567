@@ -1701,7 +1701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86a1ce42ea3e3dd44868493ae73ec06d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 1
+  maxSpeed: 3
   accTime: 0.2
   decTime: 0.1
   acc: 0
@@ -1720,6 +1720,14 @@ MonoBehaviour:
   CoyoteTime: 0.1
   G: 0
   InitialJumpVelocity: 0
+  CoyoteTimer: 0
+  jumpcutG: 2
+  minJumpTime: 0.05
+  DashSpeed: 10
+  DashDuration: 0.15
+  DashCD: 0.5
+  DashTimer: 0
+  DashCDTimer: 0
 --- !u!4 &1433354315
 Transform:
   m_ObjectHideFlags: 0

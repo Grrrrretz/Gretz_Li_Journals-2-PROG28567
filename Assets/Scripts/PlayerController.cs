@@ -29,14 +29,27 @@ public class PlayerController : MonoBehaviour
     public float ApexTime;
     public float TerminalSpeed;
     public float CoyoteTime;
-    //
+
     public float G;
     public float InitialJumpVelocity;
-    private float CoyoteTimer;
+    public float CoyoteTimer;
 
     bool Jumping = false;
 
+    //------------------------------------------------//
+    public float jumpcutG = 2f;
+    public float minJumpTime = 0.05f;
 
+    
+    //------------------------------------------------//
+    public float DashSpeed = 10f;
+    public float DashDuration = 0.15f;
+    public float DashCD = 0.5f;
+    //-----------------------------------------------//
+    public float DashTimer;
+    public float DashCDTimer;
+
+    bool dashing = false;
 
 
     public enum FacingDirection
@@ -65,6 +78,7 @@ public class PlayerController : MonoBehaviour
         //The input from the player needs to be determined and then passed in the to the MovementUpdate which should
         //manage the actual movement of the character.
 
+        //walkPart
         if (Input.GetKey(KeyCode.D))
         {
             tool = 1;
@@ -79,7 +93,7 @@ public class PlayerController : MonoBehaviour
         {
             playerInput = Vector2.zero;
         }
-
+        //jumpPart-----------------------------------
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jumping = true;
@@ -93,6 +107,27 @@ public class PlayerController : MonoBehaviour
         {
             CoyoteTimer -= Time.deltaTime;
         }
+        //Dashpart----------------------------------------
+        if (DashCDTimer > 0f) 
+        { 
+        
+            DashCDTimer -= Time.deltaTime;
+        
+        }
+        if(dashing == true)
+        {
+            DashTimer -= Time.deltaTime;
+            if(DashTimer <= 0)
+            {
+                dashing = false;
+            }
+        }else if(Input.GetKeyDown(KeyCode.LeftShift) && DashCDTimer <= 0f && playerInput.x != 0)
+        {
+            dashing = true;
+            DashTimer = DashDuration;
+            DashCDTimer = DashCD;
+        }
+
 
     }
 
@@ -134,11 +169,27 @@ public class PlayerController : MonoBehaviour
             ADDorSUB = dec;
         }
 
+        
+
+        //dashpart
+
+        if(dashing == true)
+        {
+            float dashlocation = DashSpeed * playerInput.x;
+            nowspeed.x = dashlocation;
+        }
+
+
+
+        //X axis final
         float newSpeed = Mathf.MoveTowards(nowspeed.x, realspeed, ADDorSUB * Time.fixedDeltaTime);
 
 
 
         rigibd.linearVelocityX = newSpeed;
+
+
+        //jump part
 
         rigibd.linearVelocityY += G * Time.fixedDeltaTime;
 
