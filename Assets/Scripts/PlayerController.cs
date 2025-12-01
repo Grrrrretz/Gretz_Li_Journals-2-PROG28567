@@ -40,7 +40,8 @@ public class PlayerController : MonoBehaviour
     public float jumpcutG = 2f;
     public float minJumpTime = 0.05f;
 
-    
+    bool jumpHolding = false;
+    public float jumpHoldingTimer;
     //------------------------------------------------//
     public float DashSpeed = 10f;
     public float DashDuration = 0.15f;
@@ -78,7 +79,7 @@ public class PlayerController : MonoBehaviour
         //The input from the player needs to be determined and then passed in the to the MovementUpdate which should
         //manage the actual movement of the character.
 
-        //walkPart
+        //walkPart----------------------------------
         if (Input.GetKey(KeyCode.D))
         {
             tool = 1;
@@ -94,9 +95,17 @@ public class PlayerController : MonoBehaviour
             playerInput = Vector2.zero;
         }
         //jumpPart-----------------------------------
+   
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jumping = true;
+            jumpHolding = true;
+            jumpHoldingTimer = 0;
+        }
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            jumpHolding = false;
         }
 
         if (IsGrounded())
@@ -191,21 +200,35 @@ public class PlayerController : MonoBehaviour
 
         //jump part
 
-        rigibd.linearVelocityY += G * Time.fixedDeltaTime;
+        if (jumpHolding == true)
+        {
+            jumpHoldingTimer += Time.fixedDeltaTime;
+        }
 
-        if(Jumping == true && CoyoteTimer > 0f)
+
+        float currentG = G;
+
+        if (jumpHolding == false && nowspeed.y > 0 && jumpHoldingTimer >= minJumpTime)
+        {
+            currentG = G* jumpcutG;
+        }
+
+        nowspeed.y += currentG * Time.fixedDeltaTime;
+
+        if (Jumping == true && CoyoteTimer > 0f)
         {
 
-            rigibd.linearVelocityY = InitialJumpVelocity;
+            nowspeed.y = InitialJumpVelocity;
             CoyoteTimer = 0f;
 
             
         }
-        if (rigibd.linearVelocityY < -TerminalSpeed)
+        if (rigibd.linearVelocityY < -TerminalSpeed && TerminalSpeed > 0f)
         {
-            rigibd.linearVelocityY = -TerminalSpeed;
+            nowspeed.y = -TerminalSpeed;
         }
 
+        rigibd.linearVelocityY = nowspeed.y;
 
         Jumping = false;
 
